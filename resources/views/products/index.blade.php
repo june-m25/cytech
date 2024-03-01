@@ -9,6 +9,10 @@
 <div class="container">
     <h1 class="mb-4">商品一覧画面</h1>
 
+    {{-- "{{}}"←PHPコードを記載できる=ProductControllerのcreateメゾットを実行
+    CCSフレームワーク(btn=要素をボタンにみせる基本的なスタイル、primary=青色、mb-3=margin-bottom(下)スペース(0~5) --}}
+    <a href="{{ route('products.create') }}" class="btn btn-primary mb-3">新規登録</a>
+
     <div class="products mt-5">
         <table class="table table-striped">
             <thead>
@@ -19,10 +23,6 @@
                     <th>価格</th>
                     <th>在庫数</th>
                     <th>メーカー名</th>
-                    {{-- "{{}}"←PHPコードを記載できる
-                    　　　=ProductControllerのcreateメゾットを実行
-                    　CCSフレームワーク(btn=要素をボタンにみせる基本的なスタイル、primary=青色、mb-3=margin-bottom(下)スペース(0~5) --}}
-                    <th><a href="{{ route('products.create') }}" class="btn btn-primary mb-3">新規登録</a></th>
                 </tr>
             </thead>
             <tbody>

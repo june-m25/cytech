@@ -38,5 +38,7 @@ Auth::routes();
 //一般的な認証に関するルーティングを自動的に定義する
 //ログイン画面に用意されているビューのリンク先がこの１行でOK!!
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::group(['middleware' => 'auth'], function () {
+    Route::resource('products', ProductController::class);
+});
 
