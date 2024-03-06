@@ -29,7 +29,7 @@
             {{-- 繰り返し処理 --}}
             @foreach ($products as $product)
                 <tr>
-                    <td>{{ $products->id }}</td>
+                    <td>{{ $product->id }}</td>
                     
                     <td><img src="{{ asset($product->img_path) }}" alt="商品画像" width="100"></td>
                     <td>{{ $product->product_name }}</td>
@@ -41,7 +41,7 @@
                         <a href="{{ route('products.show', $product) }}" class="btn btn-info btn-sm mx-1">詳細表示</a>
                         <form method="POST" action="{{ route('products.destroy', $product)}}" class="d-inline">
                             @csrf
-                            @method
+                            @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm mx-1">削除</button>
                         </form>
                     </td>
@@ -49,6 +49,10 @@
             @endforeach
             </tbody>
         </table>
+    </div>
+
+    <div class="mb-4">
+        {{ $products->links() }}
     </div>
 </div>
 @endsection

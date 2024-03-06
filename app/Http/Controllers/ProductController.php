@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Company;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
 
 class ProductController extends Controller
 {
@@ -20,8 +21,8 @@ class ProductController extends Controller
     public function index()
     {
         //商品一覧画面
-        $products = Product::all();
-        //products_tableデータがすべて格納
+        $products = Product::paginate(10);
+        //products_tableデータが1ページ10個表示
         //Product=モデル名
 
         return view('products.index', compact('products'));
@@ -125,7 +126,7 @@ class ProductController extends Controller
         //商品情報詳細画面
         //指定されたIDでデータベースから検索する
 
-        return view('products.show', compact('products'));
+        return view('products.show', ['product' => $product]);
 
     }
 
@@ -145,7 +146,7 @@ class ProductController extends Controller
         $companies = Company::all();
         //→会社情報が必要
 
-        return view('products.edit', compact('products', 'companies'));
+        return view('products.edit', compact('product', 'companies'));
 
     }
     
