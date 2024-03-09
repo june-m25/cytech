@@ -16,20 +16,52 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    //Read(読み取り)
-    //index=データ一覧表示
-    public function index()
+    //商品一覧画面
+    //CRUD→Read(読み取り)
+    //メゾット→index=データ一覧表示
+    public function index(Request $request)
     {
-        //商品一覧画面
-        $products = Product::paginate(10);
-        //products_tableデータが1ページ10個表示
-        //Product=モデル名
+        //Productモデルに基づいて操作要求(クリエ)を初期化
+        //この行の後にクエリを逐次構築
+        $query = Product::query();
 
-        return view('products.index', compact('products'));
-        //compact=格納データをビュー側で利用できる
+        if($search = $request->search){
+            $query->where('product_name','LIKE',"%{$search}%");
+        }
+
+        if($min_price = $request->min_price){
+            $query->where('price','>=', $min_price);
+        }
+
+        if($max_price = $request->max_price){
+            $query->where('price','<=', $max_price);
+        }
+
+        if($min_stock = $request->min_stock){
+            $query->where('stock','>=', $min_stock);
+        }
+
+        if($max_stock = $request->max_stock){
+            $query->where('price','<=', $max_stock);
+        }
+
+        //ソートが指定されている場合、そのカラムでソートを行う
+        if($sort = $request->sort){
+            $direction = $request->direction == 'desc' ? 'desc' : 'asc';
+            $query->orderBy($sort, $direction);
+        }
+        
+        //上記の条件(クエリ)に基づき商品を取得し、10件ごとにページネーションを適用
+        //Product=モデル名
+        $products = $query->paginate(10);
+
+        //商品一覧を表示し、取得した商品情報ビューに渡す
         //products=変数名
+        return view('products.index', ['products' => $products]);
 
     }
+
+    
 
     /**
      * Show the form for creating a new resource.
