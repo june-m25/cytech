@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -94,51 +95,58 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //商品新規登録画面
+        DB::beginTransaction();
 
         //Request=送られてきたデータを変数へ
         //->$validate=変数データが特定条件を満たしているかをチェック
         //required=必須,nullable=未入力OK
-        $request->validate([
-            'product_name' => 'required',
-            'company_id' => 'required',
-            'price' => 'required',
-            'stock' => 'required',
-            'comment' => 'nullable',
-            'img_path' => 'nullable|image|max:2048',
-            //2048=2メガバイト
-        ]);
-
-        //新規登録ボタン
-
-        //変数:$requestから情報取得
-        //new=新しいレコードを追加
-        $product = new Product([
-            'product_name' => $request->get('product_name'),
-            'company_id' => $request->get('company_id'),
-            'price' => $request->get('price'),
-            'stock' => $request->get('stock'),
-            'comment' => $request->get('comment'),
-        ]);
-
-        //もし画像が含まれている場合、保存する
-        if($request->hasFile('img_path')){
-        //→アップロードファイルが存在しているかチェック
-
-            $filename = $request->img_path->getClientOriginalName();
-            //→アップロードファイル名を取得
-
-            $filePath = $request->img_path->storeAs('products', $filename, 'public');
-            //→特定の場所(storage/app/public/products)に特定の名前($filename)で保存
-            //products=保存先フォルダ名
-            //public=アクセス権限(公開設定=誰でもアクセスOk)
-
-            $product->img_path = '/storage/' . $filePath;
-            //→保存場所(storage/app/public/products)、保存名
+        try {
+            $request->validate([
+                'product_name' => 'required',
+                'company_id' => 'required',
+                'price' => 'required',
+                'stock' => 'required',
+                'comment' => 'nullable',
+                'img_path' => 'nullable|image|max:2048',
+                //2048=2メガバイト
+            ]);
+    
+            //新規登録ボタン
+    
+            //変数:$requestから情報取得
+            //new=新しいレコードを追加
+            $product = new Product([
+                'product_name' => $request->get('product_name'),
+                'company_id' => $request->get('company_id'),
+                'price' => $request->get('price'),
+                'stock' => $request->get('stock'),
+                'comment' => $request->get('comment'),
+            ]);
+    
+            //もし画像が含まれている場合、保存する
+            if($request->hasFile('img_path')){
+            //→アップロードファイルが存在しているかチェック
+    
+                $filename = $request->img_path->getClientOriginalName();
+                //→アップロードファイル名を取得
+    
+                $filePath = $request->img_path->storeAs('products', $filename, 'public');
+                //→特定の場所(storage/app/public/products)に特定の名前($filename)で保存
+                //products=保存先フォルダ名
+                //public=アクセス権限(公開設定=誰でもアクセスOk)
+    
+                $product->img_path = '/storage/' . $filePath;
+                //→保存場所(storage/app/public/products)、保存名
+            }
+    
+            //データベースに新しいレコードとして保存
+            $product->save();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back();
         }
-
-        //データベースに新しいレコードとして保存
-        $product->save();
-
+        
         //全ての処理が終わったら商品一覧画面に戻る
         return redirect('products');
 
@@ -195,20 +203,27 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         //更新ボタン
+        DB::beginTransaction();
 
-        $request->validate([
-            'product_name' => 'required',
-            'price' => 'required',
-            'stock' => 'required',
-        ]);
-
-        //商品情報を更新
-        //モデルの値を書き換える
-        $product->product_name = $request->product_name;
-        $product->price = $request->price;
-        $product->stock = $request->stock;
-
-        $product->save();
+        try {
+            $request->validate([
+                'product_name' => 'required',
+                'price' => 'required',
+                'stock' => 'required',
+            ]);
+    
+            //商品情報を更新
+            //モデルの値を書き換える
+            $product->product_name = $request->product_name;
+            $product->price = $request->price;
+            $product->stock = $request->stock;
+    
+            $product->save();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back();
+        }
 
         return redirect()->route('products.index')
             ->with('success', 'Product updated successfully');
@@ -228,8 +243,15 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         //削除ボタン
+        DB:beginTransaction();
 
-        $product->delete();
+        try {
+            $product->delete();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back();
+        }
 
         return redirect('/products');
         
