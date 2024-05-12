@@ -15,6 +15,7 @@
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>    
 </head>
 <body>
     <div id="app">
@@ -76,5 +77,25 @@
             @yield('content')
         </main>
     </div>
+
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        });
+        $("#search").on('click', function(){
+            $.ajax({
+                url: "{{ route('products.index') }}",
+                type: 'GET',
+                dateType: 'json',
+                }).done(function(json){
+                    alert('ajax成功');
+                    }).fail(function(){
+                        alert('ajax失敗');
+                        });
+                });
+            
+    </script>
 </body>
 </html>

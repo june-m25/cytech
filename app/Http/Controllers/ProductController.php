@@ -243,7 +243,7 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         //削除ボタン
-        DB:beginTransaction();
+        DB::beginTransaction();
 
         try {
             $product->delete();

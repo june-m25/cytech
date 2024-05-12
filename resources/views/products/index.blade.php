@@ -43,7 +43,7 @@
             </div>
             
             <div class="form-group col-sm-12 col-md-3">
-                <button class="btn btn-outline-secondary" type="submit">検索</button>
+                <button class="btn btn-outline-secondary" type="submit" id="search">検索</button>
             </div>
 
         </form>
@@ -87,7 +87,7 @@
                         <form method="POST" action="{{ route('products.destroy', $product)}}" class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm mx-1">削除</button>
+                            <button id="danger" type="submit" class="btn btn-danger btn-sm mx-1">削除</button>
                         </form>
                     </td>
                 </tr>
