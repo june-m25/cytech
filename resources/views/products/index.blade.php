@@ -18,8 +18,7 @@
         <h2>条件絞り込み検索</h2>
 
         {{-- 検索フォーム／GETで商品一覧ルートにデータ送信  --}}
-        <form action="{{ route('products.index') }}" method="GET" class="form-inline row g-3
-        ">
+        <form action="{{ route('products.index') }}" method="GET" class="form-inline row g-3" id="my-form">
             
             {{-- 以下、検索項目入力欄   --}}
             <div class="form-group col-sm-12 col-md-3">
@@ -43,7 +42,7 @@
             </div>
             
             <div class="form-group col-sm-12 col-md-3">
-                <button class="btn btn-outline-secondary" type="submit" id="search">検索</button>
+                <button class="btn btn-outline-secondary" type="submit" id="btn-search">検索</button>
             </div>
 
         </form>
@@ -53,7 +52,7 @@
     <a href="{{ route('products.index') }}" class="btn btn-success mt-3">リセット</a>
 
     <div class="products mt-5">
-        <table class="table table-striped">
+        <table class="table table-striped" id="table-list">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -87,7 +86,7 @@
                         <form method="POST" action="{{ route('products.destroy', $product)}}" class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button id="danger" type="submit" class="btn btn-danger btn-sm mx-1">削除</button>
+                            <button type="submit" class="btn btn-danger btn-sm mx-1">削除</button>
                         </form>
                     </td>
                 </tr>

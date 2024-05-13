@@ -58,8 +58,9 @@ class ProductController extends Controller
 
         //商品一覧を表示し、取得した商品情報ビューに渡す
         //products=変数名
-        return view('products.index', ['products' => $products]);
-
+        return response()->json([
+            'list' => view('products.index', ['products' => $products])->render()
+        ]);
     }
 
     
